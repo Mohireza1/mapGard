@@ -1,0 +1,301 @@
+/* Fonts */
+@font-face {
+    font-family: Iran Sans;
+    src: url(fonts/IRANSansWeb_UltraLight.woff2) format('woff2');
+    font-weight: 400;
+}
+
+@font-face {
+    font-family: Iran Sans;
+    src: url(fonts/IRANSansWeb_Medium.woff) format('woff');
+    font-weight: 600;
+}
+
+/* Variables */
+:root {
+    --step-0: clamp(0.63rem, calc(0.58rem + 0.24vw), 0.75rem);
+    --pr-clr: #F2784B;
+    --sec-clr: #744A45;
+    --side-bg-clr: #000000ff;
+    --shade-clr: rgb(65, 65, 65);
+    --form-clr: rgb(34 34 34);
+    --txt-clr: #efefef
+}
+
+/* Global */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    font-size: var(--step-0);
+}
+
+body {
+    height: 100%;
+    font-family: 'Iran Sans', sans-serif;
+    overflow-y: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+option,
+select {
+    font-size: 1.1rem;
+    font-family: 'Iran Sans', sans-serif;
+    font-weight: 400;
+}
+
+img {
+    width: 50%;
+    max-width: 200px;
+    height: auto;
+    margin: auto;
+    display: block;
+    margin-block-end: 3rem;
+}
+
+.form--hidden {
+    transform: translateY(-30px);
+    opacity: 0;
+    height: 0;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 32%;
+    min-width: 491px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--txt-clr);
+    background-color: #121212;
+    margin-right: 0;
+    min-height: 100vh;
+    z-index: 100;
+    padding: 1rem 1rem;
+    position: absolute;
+    /* transition: all 0.2s; */
+    overflow-x: auto;
+    resize: horizontal;
+}
+
+.sidebar__close {
+    position: absolute;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--txt-clr);
+    font-size: 2.3rem;
+    left: 2rem;
+    cursor: pointer;
+}
+
+.sidebar__container {
+    height: 73vh;
+    overflow-y: auto;
+    padding-inline: 1rem;
+    min-width: 420px;
+    margin-block-end: 1.5rem;
+}
+
+.sidebar__container::-webkit-scrollbar {
+    width: 5px;
+}
+
+/* Track */
+.sidebar__container::-webkit-scrollbar-track {
+    background: var(--form-clr);
+}
+
+/* Handle */
+.sidebar__container::-webkit-scrollbar-thumb {
+    background: var(--shade-clr);
+}
+
+/* Handle on hover */
+.sidebar__container::-webkit-scrollbar-thumb:hover {
+    background: #727272;
+}
+
+form {
+    display: grid;
+    text-align: right;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    place-items: start;
+    padding: 2rem;
+    background-color: var(--form-clr);
+    border-radius: 5px;
+    margin-block-end: 2rem;
+    transition: all 1s;
+}
+
+label {
+    display: flex;
+    justify-content: space-between;
+    gap: 0.5rem;
+    width: 100%;
+    align-items: center;
+}
+
+label:first-of-type {
+    grid-column: 1 / 3;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.form__input--name {
+    width: 81%;
+    display: block;
+    padding: 0.5rem 1rem;
+    font-size: 1.4rem;
+    border-radius: 5px;
+    border: none;
+    outline: 0;
+    background-color: var(--shade-clr);
+    color: var(--txt-clr);
+
+}
+
+select {
+    /* Enabling padding on the options */
+    width: 60%;
+    padding: 0.5rem 0.7rem;
+    border-radius: 5px;
+    background-color: var(--shade-clr);
+    color: var(--txt-clr);
+    border: none;
+    outline: 0;
+    position: inherit;
+}
+
+option:disabled {
+    color: rgba(238, 238, 238, 0.749);
+}
+
+/* Activity */
+.activity {
+    padding: 2rem;
+    background-color: var(--form-clr);
+    border-radius: 5px;
+    font-size: 1.3rem;
+    border-right: 7px solid;
+    margin-block: 1rem;
+    transition: all 0.2s;
+}
+
+.activity--cafe {
+    border-color: #E27549;
+}
+
+.activity--cultural {
+    border-color: #55433B;
+}
+
+.activity--restaurant {
+    border-color: #BDA79E;
+}
+
+.activity--entertainment {
+    border-color: #A86D64;
+}
+
+.activity__text {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.activity__details-container {
+    display: flex;
+    justify-content: space-between;
+    margin-block-start: 2rem;
+}
+
+.activity__details {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.activity__icon {
+    font-size: 1.5rem;
+}
+
+.activity__value {
+    font-weight: 400;
+    font-size: 1.25rem;
+
+}
+
+.form__submit {
+    width: 100%;
+    grid-column: 1 / 3;
+    padding: 0.6rem;
+    background-color: var(--shade-clr);
+    border: none;
+    outline: 0;
+    color: var(--txt-clr);
+    font-size: 1.4rem;
+    font-family: 'Iran Sans', sans-serif;
+    font-weight: 600;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.1s;
+}
+
+.form__submit:hover,
+.form__submit:active {
+    background-color: #727272;
+}
+
+/* Overview */
+
+.overview {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-size: 1.3rem;
+    font-weight: 300;
+}
+
+.overview__activity {
+    display: flex;
+    gap: 0.7rem;
+}
+
+/* Map */
+
+.map {
+    width: 68%;
+    margin-right: auto;
+    background-color: #aaa;
+    height: 100vh;
+    z-index: 1 !important;
+}
+
+/* Leaflet */
+.leaflet-control-layers {
+    border: none !important;
+}
+
+.leaflet-popup-content-wrapper,
+.leaflet-popup-ti {
+    background-color: var(--form-clr) !important;
+    color: var(--txt-clr) !important;
+    font-family: 'Iran Sans', sans-serif;
+    font-size: 0.9rem;
+}
+
+.leaflet-popup-content {
+    text-align: center;
+
+}
