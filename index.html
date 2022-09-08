@@ -51,7 +51,7 @@
 
       <!-- Input field -->
       <div class="sidebar__container" dir="ltr">
-        <div dir="rtl">
+        <div class="sidebar__container--rtl" dir="rtl">
           <form class="form form--hidden">
             <label
               >نام<input
@@ -59,17 +59,17 @@
                 class="form__input form__input--name"
                 dir="auto"
             /></label>
-            <label
+            <label class="label--type"
               >نوع مکان
               <select class="form__input form__input--type">
                 <option value="" disabled selected>نوع فعالیت</option>
                 <option value="کافه">کافه</option>
                 <option value="رستوران">رستوران</option>
-                <option value="مرکز فرهنگی">مرکز فرهنگی</option>
-                <option value="مرکز تفریحی">مرکز تفریحی</option>
+                <option value="فرهنگی">مرکز فرهنگی</option>
+                <option value="تفریحی">مرکز تفریحی</option>
               </select></label
             >
-            <label
+            <label class="label--blogging hidden"
               >تولید محتوا
               <select class="form__input form__input--blogging">
                 <option value="" selected disabled>
@@ -81,7 +81,7 @@
                 <option value="نامناسب">نامناسب</option>
               </select></label
             >
-            <label class="hidden"
+            <label class="label--food"
               >کیفیت غذا
               <select class="form__input form__input--food">
                 <option value="" selected disabled>
@@ -94,19 +94,19 @@
                 <option value="5">۵</option>
               </select>
             </label>
-            <label class="hidden">
+            <label class="label--prices">
               قیمت‌ها
               <select class="form__input form__input--prices">
                 <option value="" selected disabled>
                   به نظرتان قیمت غذا و نوشیدنی چطور بود
                 </option>
-                <option value="">گران</option>
-                <option value="">نسبتا گران</option>
-                <option value="">مناسب</option>
-                <option value="">ارزان</option>
+                <option value="گران">گران</option>
+                <option value="نسبتا گران">نسبتا گران</option>
+                <option value="مناسب">مناسب</option>
+                <option value="ارزان">ارزان</option>
               </select>
             </label>
-            <label
+            <label class="label--settings hidden"
               >محیط
               <select class="form__input form__input--setting">
                 <option value="" disabled selected>
@@ -119,7 +119,7 @@
                 <option value="5">۵</option>
               </select></label
             >
-            <label
+            <label class="label--overall"
               >امتیاز کلی
               <select class="form__input form__input--overall">
                 <option value="" selected disabled>
@@ -134,109 +134,25 @@
             </label>
             <button type="submit" class="form__submit">تایید</button>
           </form>
-          <!-- Submitted inputs -->
-          <!-- <div class="activity activity--cafe">
-            <p class="activity__text">کافه کوتسومیچو</p>
-            <div class="activity__details-container">
-              <div class="activity__details">
-                <div class="activity__icon">☕</div>
-                <div class="activity__value">عالی</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">💵</div>
-                <div class="activity__value">ارزان</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">⭐</div>
-                <div class="activity__value">۵</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📅</div>
-                <div class="activity__value">۱۴۰۱/۰۴/۰۲</div>
-              </div>
-            </div>
-          </div>
-          <div class="activity activity--restaurant">
-            <p class="activity__text">رستوران سنسو</p>
-            <div class="activity__details-container">
-              <div class="activity__details">
-                <div class="activity__icon">🍴</div>
-                <div class="activity__value">خوب</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">💵</div>
-                <div class="activity__value">گران</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">⭐</div>
-                <div class="activity__value">۵</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📅</div>
-                <div class="activity__value">۱۴۰۱/۰۴/۰۲</div>
-              </div>
-            </div>
-          </div>
-          <div class="activity activity--cultural">
-            <p class="activity__text">موزه عبرت</p>
-            <div class="activity__details-container">
-              <div class="activity__details">
-                <div class="activity__icon">🏛</div>
-                <div class="activity__value">۴</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📷</div>
-                <div class="activity__value">کاملا مناسب</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">⭐</div>
-                <div class="activity__value">۵</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📅</div>
-                <div class="activity__value">۱۴۰۱/۰۴/۰۲</div>
-              </div>
-            </div>
-          </div>
-          <div class="activity activity--entertainment">
-            <p class="activity__text">پارک ارم</p>
-            <div class="activity__details-container">
-              <div class="activity__details">
-                <div class="activity__icon">🎡</div>
-                <div class="activity__value">۳</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📷</div>
-                <div class="activity__value">کاملا مناسب</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">⭐</div>
-                <div class="activity__value">۵</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📅</div>
-                <div class="activity__value">۱۴۰۱/۰۴/۰۲</div>
-              </div>
-            </div>
-          </div> -->
+          <div class="workout-container"></div>
         </div>
       </div>
       <div class="overview">
         <div class="overview__activity overview__activity--cafe">
           <div class="overview__icon overview__icon--cafe">☕</div>
-          <div class="overview__value overview__value--cafe">۴</div>
+          <div class="overview__value overview__value--cafe">۰</div>
         </div>
         <div class="overview__activity overview__activity--restaurant">
           <div class="overview__icon overview__icon--restaurant">🍴</div>
-          <div class="overview__value overview__value--restaurant">۳</div>
+          <div class="overview__value overview__value--restaurant">۰</div>
         </div>
         <div class="overview__activity overview__activity--cultural">
           <div class="overview__icon overview__icon--cultural">🏛</div>
-          <div class="overview__value overview__value--cultural">۲</div>
+          <div class="overview__value overview__value--cultural">۰</div>
         </div>
         <div class="overview__activity overview__activity--entertainment">
           <div class="overview__icon overview__icon--entertainment">🎡</div>
-          <div class="overview__value overview__value--entertainment">۱</div>
+          <div class="overview__value overview__value--entertainment">۰</div>
         </div>
       </div>
     </section>

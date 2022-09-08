@@ -69,6 +69,10 @@ img {
     height: 0;
 }
 
+.form--hidden>* {
+    display: none;
+}
+
 /* Sidebar */
 .sidebar {
     width: 32%;
@@ -135,7 +139,7 @@ form {
     background-color: var(--form-clr);
     border-radius: 5px;
     margin-block-end: 2rem;
-    transition: all 1s;
+    transition: all 0.3s;
 }
 
 label {
@@ -190,22 +194,39 @@ option:disabled {
     font-size: 1.3rem;
     border-right: 7px solid;
     margin-block: 1rem;
-    transition: all 0.2s;
+    transition: all 0.2s, opacity 0;
+    cursor: pointer;
 }
 
-.activity--cafe {
+.activity:hover {
+    background-color: var(--shade-clr);
+}
+
+.popup--cafe .leaflet-popup-content-wrapper,
+.popup--cultural .leaflet-popup-content-wrapper,
+.popup--restaurant .leaflet-popup-content-wrapper,
+.popup--entertainment .leaflet-popup-content-wrapper {
+    border-right: 7px solid;
+    border-radius: 5px;
+}
+
+.activity--cafe,
+.popup--cafe .leaflet-popup-content-wrapper {
     border-color: #E27549;
 }
 
-.activity--cultural {
+.activity--cultural,
+.popup--cultural .leaflet-popup-content-wrapper {
     border-color: #55433B;
 }
 
-.activity--restaurant {
+.activity--restaurant,
+.popup--restaurant .leaflet-popup-content-wrapper {
     border-color: #BDA79E;
 }
 
-.activity--entertainment {
+.activity--entertainment,
+.popup--entertainment .leaflet-popup-content-wrapper {
     border-color: #A86D64;
 }
 
@@ -297,5 +318,11 @@ option:disabled {
 
 .leaflet-popup-content {
     text-align: center;
-
 }
+
+.leaflet-container a.leaflet-popup-close-button {
+    right: auto !important;
+    left: 0;
+}
+
+.hello:nth-child() {}
