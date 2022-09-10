@@ -113,6 +113,13 @@ class App {
     this.#getLocation();
     this.#setOverviews();
 
+    // Get stuff from local storage
+    const data = JSON.parse(localStorage.getItem('workouts'));
+    data.forEach(workout => {
+      this.#renderWorkout(workout);
+      this.#renderMarker(workout);
+    });
+
     // Event Listeners
 
     // Clicking on map reverse geocodes the area and finds the closes location
@@ -291,6 +298,165 @@ class App {
     }
   }
 
+  #renderWorkout(workout) {
+    switch (workout.type) {
+      case 'کافه':
+        const cafeWorkout = `          <div class="activity activity--cafe" data-id='${
+          workout.id
+        }'>
+        <button class="activity__remove">✕</button>
+            <p class="activity__text">${workout.name}</p>
+            <div class="activity__details-container">
+              <div class="activity__details">
+                <div class="activity__icon">☕</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  workout.food
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">💵</div>
+                <div class="activity__value">${workout.prices}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">⭐</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  workout.overall
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📅</div>
+                <div class="activity__value">${workout.date}</div>
+              </div>
+            </div>
+          </div>`;
+        sidebarContainer.insertAdjacentHTML('afterbegin', cafeWorkout);
+        this.#workouts.push(workout);
+        this.#cafes++;
+        cafeValue.textContent = this.#numberToPersian(this.#cafes);
+        break;
+      case 'رستوران':
+        const restaurantWorkout = `          <div class="activity activity--restaurant" data-id='${
+          workout.id
+        }'>
+        <button class="activity__remove">✕</button>
+            <p class="activity__text">${workout.name}</p>
+            <div class="activity__details-container">
+              <div class="activity__details">
+                <div class="activity__icon">🍴</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  workout.food
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">💵</div>
+                <div class="activity__value">${workout.prices}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">⭐</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  workout.overall
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📅</div>
+                <div class="activity__value">${workout.date}</div>
+              </div>
+            </div>
+          </div>`;
+
+        sidebarContainer.insertAdjacentHTML('afterbegin', restaurantWorkout);
+        this.#workouts.push(workout);
+        this.#restaurants++;
+        restaurantValue.textContent = this.#numberToPersian(this.#restaurants);
+        break;
+      case 'فرهنگی':
+        const culturalWorkout = `          <div class="activity activity--cultural" data-id='${
+          workout.id
+        }'>
+        <button class="activity__remove">✕</button>
+            <p class="activity__text">${workout.name}</p>
+            <div class="activity__details-container">
+              <div class="activity__details">
+                <div class="activity__icon">🏛</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  workout.setting
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📷</div>
+                <div class="activity__value">${workout.blogging}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">⭐</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  workout.overall
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📅</div>
+                <div class="activity__value">${workout.date}</div>
+              </div>
+            </div>
+          </div>`;
+        sidebarContainer.insertAdjacentHTML('afterbegin', culturalWorkout);
+        this.#workouts.push(workout);
+        this.#culturals++;
+        culturalValue.textContent = this.#numberToPersian(this.#culturals);
+        break;
+      case 'تفریحی':
+        const entertainmentWorkout = `          <div class="activity activity--entertainment" data-id='${
+          workout.id
+        }'>
+        <button class="activity__remove">✕</button>
+            <p class="activity__text">${workout.name}</p>
+            <div class="activity__details-container">
+              <div class="activity__details">
+                <div class="activity__icon">🎡</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  workout.setting
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📷</div>
+                <div class="activity__value">${workout.blogging}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">⭐</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  workout.overall
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📅</div>
+                <div class="activity__value">${workout.date}</div>
+              </div>
+            </div>
+          </div>`;
+
+        sidebarContainer.insertAdjacentHTML('afterbegin', entertainmentWorkout);
+        this.#workouts.push(workout);
+        this.#entertainments++;
+        entertainmentValue.textContent = this.#numberToPersian(
+          this.#entertainments
+        );
+        break;
+    }
+  }
+
+  #renderMarker(workout) {
+    // Add the marker
+    const marker = L.marker(workout.coords).bindPopup(`${workout.name}`, {
+      maxWidth: 250,
+      minWidth: 100,
+      autoClose: false,
+      closeOnClick: false,
+      className: `popup--${this.#typeConvert.get(workout.type)}`,
+    });
+    marker._workoutKey = workout.id;
+    this.#markers.push(marker);
+    marker.addTo(this.#map).openPopup();
+  }
+
   #submit() {
     // Removes the temporary marker
     this.#map.removeLayer(this.#tempMarker);
@@ -304,11 +470,8 @@ class App {
     let food;
     let setting;
     let blogging;
-    let date;
 
     let workout;
-
-    let markerId;
 
     if (type === 'کافه' || type === 'رستوران') {
       prices = inputPrices.value;
@@ -340,11 +503,6 @@ class App {
     switch (type) {
       case 'کافه':
         workout = new Cafe(name, this.#latlng, type, overall, food, prices);
-        markerId = workout.id;
-        date = workout.date;
-        this.#workouts.push(workout);
-        this.#cafes++;
-        cafeValue.textContent = this.#numberToPersian(this.#cafes);
         break;
       case 'رستوران':
         workout = new Restaurant(
@@ -355,11 +513,6 @@ class App {
           food,
           prices
         );
-        markerId = workout.id;
-        date = workout.date;
-        this.#workouts.push(workout);
-        this.#restaurants++;
-        restaurantValue.textContent = this.#numberToPersian(this.#restaurants);
         break;
       case 'فرهنگی':
         workout = new Cultural(
@@ -370,11 +523,6 @@ class App {
           setting,
           blogging
         );
-        markerId = workout.id;
-        date = workout.date;
-        this.#workouts.push(workout);
-        this.#culturals++;
-        culturalValue.textContent = this.#numberToPersian(this.#culturals);
         break;
       case 'تفریحی':
         workout = new Entertainment(
@@ -384,13 +532,6 @@ class App {
           overall,
           setting,
           blogging
-        );
-        markerId = workout.id;
-        date = workout.date;
-        this.#workouts.push(workout);
-        this.#entertainments;
-        entertainmentValue.textContent = this.#numberToPersian(
-          this.#entertainments
         );
         break;
     }
@@ -420,143 +561,18 @@ class App {
         className: `popup--${this.#typeConvert.get(type)}`,
       }
     );
-    marker._workoutKey = markerId;
+    marker._workoutKey = workout.id;
     this.#markers.push(marker);
     marker.addTo(this.#map).openPopup();
 
     // Render new workout on the list
-
-    switch (type) {
-      case 'کافه':
-        const cafeWorkout = `          <div class="activity activity--cafe" data-id='${
-          workout.id
-        }'>
-        <button class="activity__remove">✕</button>
-            <p class="activity__text">${name}</p>
-            <div class="activity__details-container">
-              <div class="activity__details">
-                <div class="activity__icon">☕</div>
-                <div class="activity__value">${this.#numberToPersian(
-                  food
-                )}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">💵</div>
-                <div class="activity__value">${prices}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">⭐</div>
-                <div class="activity__value">${this.#numberToPersian(
-                  overall
-                )}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📅</div>
-                <div class="activity__value">${date}</div>
-              </div>
-            </div>
-          </div>`;
-        sidebarContainer.insertAdjacentHTML('afterbegin', cafeWorkout);
-        break;
-      case 'رستوران':
-        const restaurantWorkout = `          <div class="activity activity--restaurant" data-id='${
-          workout.id
-        }'>
-        <button class="activity__remove">✕</button>
-            <p class="activity__text">${name}</p>
-            <div class="activity__details-container">
-              <div class="activity__details">
-                <div class="activity__icon">🍴</div>
-                <div class="activity__value">${this.#numberToPersian(
-                  food
-                )}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">💵</div>
-                <div class="activity__value">${prices}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">⭐</div>
-                <div class="activity__value">${this.#numberToPersian(
-                  overall
-                )}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📅</div>
-                <div class="activity__value">${date}</div>
-              </div>
-            </div>
-          </div>`;
-
-        sidebarContainer.insertAdjacentHTML('afterbegin', restaurantWorkout);
-        break;
-      case 'فرهنگی':
-        const culturalWorkout = `          <div class="activity activity--cultural" data-id='${
-          workout.id
-        }'>
-        <button class="activity__remove">✕</button>
-            <p class="activity__text">${name}</p>
-            <div class="activity__details-container">
-              <div class="activity__details">
-                <div class="activity__icon">🏛</div>
-                <div class="activity__value">${this.#numberToPersian(
-                  setting
-                )}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📷</div>
-                <div class="activity__value">${blogging}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">⭐</div>
-                <div class="activity__value">${this.#numberToPersian(
-                  overall
-                )}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📅</div>
-                <div class="activity__value">${date}</div>
-              </div>
-            </div>
-          </div>`;
-        sidebarContainer.insertAdjacentHTML('afterbegin', culturalWorkout);
-        break;
-      case 'تفریحی':
-        const entertainmentWorkout = `          <div class="activity activity--entertainment" data-id='${
-          workout.id
-        }'>
-        <button class="activity__remove">✕</button>
-            <p class="activity__text">${name}</p>
-            <div class="activity__details-container">
-              <div class="activity__details">
-                <div class="activity__icon">🎡</div>
-                <div class="activity__value">${this.#numberToPersian(
-                  setting
-                )}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📷</div>
-                <div class="activity__value">${blogging}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">⭐</div>
-                <div class="activity__value">${this.#numberToPersian(
-                  overall
-                )}</div>
-              </div>
-              <div class="activity__details">
-                <div class="activity__icon">📅</div>
-                <div class="activity__value">${date}</div>
-              </div>
-            </div>
-          </div>`;
-
-        sidebarContainer.insertAdjacentHTML('afterbegin', entertainmentWorkout);
-        break;
-    }
+    this.#renderWorkout(workout);
 
     // Clear and hide the form
     this.#closeForm();
+
+    // Local storage
+    localStorage.setItem('workouts', JSON.stringify(this.#workouts));
   }
 
   #goToWorkout(e) {
@@ -594,19 +610,42 @@ class App {
       }
     });
 
+    switch (object.type) {
+      case 'کافه':
+        this.#cafes--;
+        cafeValue.textContent = this.#numberToPersian(this.#cafes);
+        break;
+      case 'رستوران':
+        this.#restaurants--;
+        restaurantValue.textContent = this.#numberToPersian(this.#restaurants);
+        break;
+      case 'فرهنگی':
+        this.#culturals--;
+        culturalValue.textContent = this.#numberToPersian(this.#culturals);
+        break;
+      case 'تفریحی':
+        this.#entertainments--;
+        entertainmentValue.textContent = this.#numberToPersian(
+          this.#entertainments
+        );
+        break;
+    }
+
     // Remove the workout from the list
     parent.remove();
-    this.#workouts.splice(index);
+    this.#workouts.splice(index, 1);
 
     // Remove the linked marker
-    const selectedMarker = this.#markers.find(
+    let selectedMarker = this.#markers.find(
       marker => marker._workoutKey === object.id
     );
 
     this.#map.removeLayer(selectedMarker);
 
-    this.#markers.splice(this.#markers.indexOf(selectedMarker));
+    this.#markers.splice(this.#markers.indexOf(selectedMarker), 1);
     selectedMarker = null;
+    // Local storage
+    localStorage.setItem('workouts', JSON.stringify(this.#workouts));
   }
 }
 
@@ -632,6 +671,8 @@ class Workout {
 }
 
 class Cafe extends Workout {
+  type = 'کافه';
+
   constructor(name, coords, type, overall, food, prices) {
     super(name, coords, type, overall);
     this.food = food;
@@ -640,6 +681,8 @@ class Cafe extends Workout {
 }
 
 class Restaurant extends Workout {
+  type = 'رستوران';
+
   constructor(name, coords, type, overall, food, prices) {
     super(name, coords, type, overall);
     this.food = food;
@@ -648,6 +691,8 @@ class Restaurant extends Workout {
 }
 
 class Cultural extends Workout {
+  type = 'فرهنگی';
+
   constructor(name, coords, type, overall, setting, blogging) {
     super(name, coords, type, overall);
     this.setting = setting;
@@ -656,6 +701,8 @@ class Cultural extends Workout {
 }
 
 class Entertainment extends Workout {
+  type = 'تفریحی';
+
   constructor(name, coords, type, overall, setting, blogging) {
     super(name, coords, type, overall);
     this.setting = setting;
