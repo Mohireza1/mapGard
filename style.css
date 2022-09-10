@@ -63,16 +63,6 @@ img {
     margin-block-end: 3rem;
 }
 
-.form--hidden {
-    transform: translateY(-30px);
-    opacity: 0;
-    height: 0;
-}
-
-.form--hidden>* {
-    display: none;
-}
-
 /* Sidebar */
 .sidebar {
     width: 32%;
@@ -91,15 +81,15 @@ img {
     resize: horizontal;
 }
 
-.sidebar__close {
-    position: absolute;
-    background: transparent;
-    border: none;
-    outline: none;
-    color: var(--txt-clr);
-    font-size: 2.3rem;
-    left: 2rem;
-    cursor: pointer;
+.sidebar--hidden {
+    transform: translateX(500px);
+    opacity: 0;
+    width: 0;
+    transition: all 0.1s;
+}
+
+.sidebar--hidden>* {
+    display: none;
 }
 
 .sidebar__container {
@@ -129,6 +119,10 @@ img {
     background: #727272;
 }
 
+.sidebar__container--rtl {
+    position: relative;
+}
+
 form {
     display: grid;
     text-align: right;
@@ -140,6 +134,33 @@ form {
     border-radius: 5px;
     margin-block-end: 2rem;
     transition: all 0.3s;
+}
+
+.form--hidden {
+    transform: translateY(-30px);
+    opacity: 0;
+    height: 0;
+}
+
+.form--hidden>* {
+    display: none;
+}
+
+.form__close {
+    margin-inline-start: auto;
+    margin-block-start: -1rem;
+    grid-column: 3 / 2;
+    background: none;
+    color: var(--txt-clr);
+    font-size: 1.5rem;
+    font-weight: 500;
+    border: none;
+    outline: 0;
+    cursor: pointer;
+}
+
+.form__close:hover {
+    opacity: 0.6;
 }
 
 label {
@@ -187,6 +208,10 @@ option:disabled {
 }
 
 /* Activity */
+.workout-container {
+    position: relative;
+}
+
 .activity {
     padding: 2rem;
     background-color: var(--form-clr);
@@ -196,11 +221,14 @@ option:disabled {
     margin-block: 1rem;
     transition: all 0.2s, opacity 0;
     cursor: pointer;
+    position: relative;
 }
 
 .activity:hover {
     background-color: var(--shade-clr);
+    transition: background-color 0.1s ease-out;
 }
+
 
 .popup--cafe .leaflet-popup-content-wrapper,
 .popup--cultural .leaflet-popup-content-wrapper,
@@ -228,6 +256,22 @@ option:disabled {
 .activity--entertainment,
 .popup--entertainment .leaflet-popup-content-wrapper {
     border-color: #A86D64;
+}
+
+.activity__remove {
+    background: transparent;
+    position: absolute;
+    left: 1.5rem;
+    top: 1rem;
+    border: none;
+    outline: none;
+    color: var(--txt-clr);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.activity__remove:hover {
+    opacity: 0.6;
 }
 
 .activity__text {
@@ -324,5 +368,3 @@ option:disabled {
     right: auto !important;
     left: 0;
 }
-
-.hello:nth-child() {}

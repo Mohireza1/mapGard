@@ -4,8 +4,11 @@
 const form = document.querySelector('form');
 const sidebarContainer = document.querySelector('.workout-container');
 
-const inputName = document.querySelector('.form__input--name');
+const listContainer = document.querySelector('.sidebar__container--rtl');
 
+const formClose = document.querySelector('.form__close');
+
+const inputName = document.querySelector('.form__input--name');
 const inputType = document.querySelector('.form__input--type');
 const typeOptions = [...inputType.querySelectorAll('option')].map(o => o.value);
 const inputBlogging = document.querySelector('.form__input--blogging');
@@ -133,6 +136,12 @@ class App {
 
     // A method to move to the position of the workout on the map when you click on the workout object in the list
     sidebarContainer.addEventListener('click', this.#goToWorkout.bind(this));
+
+    // Close the form when the user clicks on the close form button
+    formClose.addEventListener('click', this.#closeForm.bind(this));
+
+    // Delete form when the button is clicked
+    listContainer.addEventListener('click', this.#removeActivity.bind(this));
   }
 
   #setOverviews() {
@@ -157,8 +166,7 @@ class App {
     const base = L.tileLayer(
       'https://c.tile.openstreetmap.fr/osmfr/{z}/{x}/{y}.png',
       {
-        attribution: '© OpenStreetMap',
-        maxzoom: 19,
+        attribution: '© OpenStreetMap, © 2022 Mohireza',
       }
     ).addTo(this.#map);
 
@@ -265,6 +273,24 @@ class App {
     }
   }
 
+  // Clear and hide the form and the temporary marker
+  #closeForm() {
+    form.classList.add('form--hidden');
+
+    inputName.value = '';
+
+    inputType.value = typeOptions[0];
+    inputBlogging.value = bloggingOptions[0];
+    inputPrices.value = pricesOptions[0];
+    inputSetting.value = settingOptions[0];
+    inputOverall.value = overallOptions[0];
+    inputFood.value = foodOptions[0];
+
+    if (this.#tempMarker) {
+      this.#map.removeLayer(this.#tempMarker);
+    }
+  }
+
   #submit() {
     // Removes the temporary marker
     this.#map.removeLayer(this.#tempMarker);
@@ -287,7 +313,6 @@ class App {
     if (type === 'کافه' || type === 'رستوران') {
       prices = inputPrices.value;
       food = +inputFood.value;
-      console.log(food);
 
       if (!prices || !food) {
         return alert('لطفا تمام گزینه ها را مشخص کنید');
@@ -297,7 +322,6 @@ class App {
     if (type === 'فرهنگی' || type === 'تفریحی') {
       setting = +inputSetting.value;
       blogging = inputBlogging.value;
-      console.log(setting, this.#numberToPersian(setting));
 
       if (!setting || !blogging) {
         return alert('لطفا تمام گزینه ها را مشخص کنید');
@@ -316,7 +340,7 @@ class App {
     switch (type) {
       case 'کافه':
         workout = new Cafe(name, this.#latlng, type, overall, food, prices);
-        markerId = workout.name;
+        markerId = workout.id;
         date = workout.date;
         this.#workouts.push(workout);
         this.#cafes++;
@@ -331,7 +355,7 @@ class App {
           food,
           prices
         );
-        markerId = workout.name;
+        markerId = workout.id;
         date = workout.date;
         this.#workouts.push(workout);
         this.#restaurants++;
@@ -346,7 +370,7 @@ class App {
           setting,
           blogging
         );
-        markerId = workout.name;
+        markerId = workout.id;
         date = workout.date;
         this.#workouts.push(workout);
         this.#culturals++;
@@ -370,7 +394,6 @@ class App {
         );
         break;
     }
-    console.log(this.#workouts);
 
     // Add the marker to map with a customized popup window and the search coordinates
     let markerLat;
@@ -397,10 +420,9 @@ class App {
         className: `popup--${this.#typeConvert.get(type)}`,
       }
     );
-    marker._id = markerId;
+    marker._workoutKey = markerId;
     this.#markers.push(marker);
     marker.addTo(this.#map).openPopup();
-    console.log(this.#markers);
 
     // Render new workout on the list
 
@@ -409,6 +431,7 @@ class App {
         const cafeWorkout = `          <div class="activity activity--cafe" data-id='${
           workout.id
         }'>
+        <button class="activity__remove">✕</button>
             <p class="activity__text">${name}</p>
             <div class="activity__details-container">
               <div class="activity__details">
@@ -433,13 +456,13 @@ class App {
               </div>
             </div>
           </div>`;
-        console.log(food);
         sidebarContainer.insertAdjacentHTML('afterbegin', cafeWorkout);
         break;
       case 'رستوران':
         const restaurantWorkout = `          <div class="activity activity--restaurant" data-id='${
           workout.id
         }'>
+        <button class="activity__remove">✕</button>
             <p class="activity__text">${name}</p>
             <div class="activity__details-container">
               <div class="activity__details">
@@ -465,13 +488,13 @@ class App {
             </div>
           </div>`;
 
-        console.log(food);
         sidebarContainer.insertAdjacentHTML('afterbegin', restaurantWorkout);
         break;
       case 'فرهنگی':
         const culturalWorkout = `          <div class="activity activity--cultural" data-id='${
           workout.id
         }'>
+        <button class="activity__remove">✕</button>
             <p class="activity__text">${name}</p>
             <div class="activity__details-container">
               <div class="activity__details">
@@ -502,6 +525,7 @@ class App {
         const entertainmentWorkout = `          <div class="activity activity--entertainment" data-id='${
           workout.id
         }'>
+        <button class="activity__remove">✕</button>
             <p class="activity__text">${name}</p>
             <div class="activity__details-container">
               <div class="activity__details">
@@ -532,32 +556,57 @@ class App {
     }
 
     // Clear and hide the form
-
-    form.classList.add('form--hidden');
-
-    inputName.value = '';
-
-    inputType.value = typeOptions[0];
-    inputBlogging.value = bloggingOptions[0];
-    inputPrices.value = pricesOptions[0];
-    inputSetting.value = settingOptions[0];
-    inputOverall.value = overallOptions[0];
-    inputFood.value = foodOptions[0];
+    this.#closeForm();
   }
 
   #goToWorkout(e) {
+    if (e.target === document.querySelector('.activity__remove')) return;
+
     const target = e.target.closest('.activity');
 
     if (!target) return;
 
-    console.log(target);
-
     const currentWorkout = this.#workouts.find(
       workout => workout.id === target.dataset.id
     );
-    console.log(currentWorkout);
 
     this.#map.setView(currentWorkout.coords);
+  }
+
+  #removeActivity(e) {
+    const target = e.target.closest('.activity__remove');
+
+    if (!target) return;
+
+    // Get the activity and its data-id
+    const parent = e.target.closest('.activity');
+    const id = parent.dataset.id;
+
+    // Find the object
+    let object;
+    let index;
+
+    // Set the index and workout to the selected one
+    this.#workouts.find((obj, i) => {
+      if (obj.id === id) {
+        object = obj;
+        index = i;
+      }
+    });
+
+    // Remove the workout from the list
+    parent.remove();
+    this.#workouts.splice(index);
+
+    // Remove the linked marker
+    const selectedMarker = this.#markers.find(
+      marker => marker._workoutKey === object.id
+    );
+
+    this.#map.removeLayer(selectedMarker);
+
+    this.#markers.splice(this.#markers.indexOf(selectedMarker));
+    selectedMarker = null;
   }
 }
 
