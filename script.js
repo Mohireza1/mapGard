@@ -60,6 +60,11 @@ class App {
   #geocoder;
   #geolocationName;
 
+  #parentEdit;
+  #editOpen = false;
+  #secondEdit = false;
+  #initialHTML;
+
   #workouts = [];
 
   #markers = [];
@@ -149,6 +154,9 @@ class App {
 
     // Delete form when the button is clicked
     listContainer.addEventListener('click', this.#removeActivity.bind(this));
+
+    // Edit activity
+    listContainer.addEventListener('click', this.#editActivity.bind(this));
   }
 
   #setOverviews() {
@@ -280,7 +288,6 @@ class App {
     }
   }
 
-  // Clear and hide the form and the temporary marker
   #closeForm() {
     form.classList.add('form--hidden');
 
@@ -304,7 +311,10 @@ class App {
         const cafeWorkout = `          <div class="activity activity--cafe" data-id='${
           workout.id
         }'>
-        <button class="activity__remove">✕</button>
+        <div class="activity__button--holder">
+          <button class="activity__remove">✕</button>
+          <button class="activity__edit">🖉</button>
+        </div>
             <p class="activity__text">${workout.name}</p>
             <div class="activity__details-container">
               <div class="activity__details">
@@ -338,7 +348,10 @@ class App {
         const restaurantWorkout = `          <div class="activity activity--restaurant" data-id='${
           workout.id
         }'>
-        <button class="activity__remove">✕</button>
+        <div class="activity__button--holder">
+          <button class="activity__remove">✕</button>
+          <button class="activity__edit">🖉</button>
+        </div>
             <p class="activity__text">${workout.name}</p>
             <div class="activity__details-container">
               <div class="activity__details">
@@ -373,7 +386,10 @@ class App {
         const culturalWorkout = `          <div class="activity activity--cultural" data-id='${
           workout.id
         }'>
-        <button class="activity__remove">✕</button>
+        <div class="activity__button--holder">
+          <button class="activity__remove">✕</button>
+          <button class="activity__edit">🖉</button>
+        </div>
             <p class="activity__text">${workout.name}</p>
             <div class="activity__details-container">
               <div class="activity__details">
@@ -407,7 +423,10 @@ class App {
         const entertainmentWorkout = `          <div class="activity activity--entertainment" data-id='${
           workout.id
         }'>
-        <button class="activity__remove">✕</button>
+        <div class="activity__button--holder">
+          <button class="activity__remove">✕</button>
+          <button class="activity__edit">🖉</button>
+        </div>
             <p class="activity__text">${workout.name}</p>
             <div class="activity__details-container">
               <div class="activity__details">
@@ -646,6 +665,436 @@ class App {
     selectedMarker = null;
     // Local storage
     localStorage.setItem('workouts', JSON.stringify(this.#workouts));
+  }
+
+  #editActivity(e) {
+    let formSmall;
+
+    let inputFood;
+    let inputPrices;
+    let inputBlogging;
+    let inputSetting;
+
+    const target = e.target.closest('.activity__edit');
+
+    if (!target) return;
+
+    const parent = e.target.closest('.activity');
+    const id = parent.dataset.id;
+    const object = this.#workouts.find(workout => workout.id === id);
+
+    /*
+    we have to edits one main edit and one other edit
+    first edit => mainEdit = true, if other edit = false (parent edit = first edit);
+    second edit => if main edit = true (other edit = true), if other edit = true (parent edit inner = '', parent edit = second edit, other edit = false)
+    */
+    if (this.#editOpen) {
+      this.#secondEdit = true;
+    }
+
+    this.#editOpen = true;
+
+    if (!this.#secondEdit) {
+      this.#parentEdit = parent;
+      this.#initialHTML = parent.innerHTML;
+    } else {
+      this.#parentEdit.innerHTML = this.#initialHTML;
+      this.#parentEdit = parent;
+      this.#secondEdit = false;
+      this.#initialHTML = parent.innerHTML;
+    }
+
+    if (object.type === 'کافه') {
+      parent.innerHTML = `  <form class="form form--small">
+  <label
+    >نام<input type="text" class="form__input form__input--name" dir="auto"
+  /></label>
+  <label class="label--type"
+    >نوع مکان
+    <select class="form__input form__input--type" disabled>
+      <option value="" disabled>نوع فعالیت</option>
+      <option selected value="کافه">کافه</option>
+      <option value="رستوران">رستوران</option>
+      <option value="فرهنگی">مرکز فرهنگی</option>
+      <option value="تفریحی">مرکز تفریحی</option>
+    </select></label
+  >
+  <label class="label--food"
+    >کیفیت غذا
+    <select class="form__input form__input--food">
+      <option value="" selected disabled>کیفیت غذا و نوشیدنی چطور بود؟</option>
+      <option value="1">۱</option>
+      <option value="2">۲</option>
+      <option value="3">۳</option>
+      <option value="4">۴</option>
+      <option value="5">۵</option>
+    </select>
+  </label>
+  <label class="label--prices">
+    قیمت‌ها
+    <select class="form__input form__input--prices">
+      <option value="" selected disabled>
+        به نظرتان قیمت غذا و نوشیدنی چطور بود
+      </option>
+      <option value="گران">گران</option>
+      <option value="نسبتا گران">نسبتا گران</option>
+      <option value="مناسب">مناسب</option>
+      <option value="ارزان">ارزان</option>
+    </select>
+  </label>
+  <label class="label--overall"
+    >امتیاز کلی
+    <select class="form__input form__input--overall">
+      <option value="" selected disabled>
+        به تجربه ی خود از این مکان چه امتیازی می دهید؟
+      </option>
+      <option value="1">۱</option>
+      <option value="2">۲</option>
+      <option value="3">۳</option>
+      <option value="4">۴</option>
+      <option value="5">۵</option>
+    </select>
+  </label>
+  <div class="form__button--holder">
+    <button class="form__close" type="button">✕</button>
+    <button type="submit" class="form__submit">تایید</button>
+  </div>
+</form>
+`;
+      formSmall = document.querySelector('.form--small');
+      inputFood = formSmall.querySelector('.form__input--food');
+      inputPrices = formSmall.querySelector('.form__input--prices');
+      inputPrices.value = object.prices;
+      inputFood.value = object.food;
+    } else if (object.type === 'رستوران') {
+      parent.innerHTML = `<form class="form form--small">
+  <label
+    >نام<input type="text" class="form__input form__input--name" dir="auto"
+  /></label>
+  <label class="label--type"
+    >نوع مکان
+    <select class="form__input form__input--type" disabled>
+      <option value="" disabled>نوع فعالیت</option>
+      <option selected value="کافه">کافه</option>
+      <option value="رستوران">رستوران</option>
+      <option value="فرهنگی">مرکز فرهنگی</option>
+      <option value="تفریحی">مرکز تفریحی</option>
+    </select></label
+  >
+  <label class="label--food"
+    >کیفیت غذا
+    <select class="form__input form__input--food">
+      <option value="" selected disabled>کیفیت غذا و نوشیدنی چطور بود؟</option>
+      <option value="1">۱</option>
+      <option value="2">۲</option>
+      <option value="3">۳</option>
+      <option value="4">۴</option>
+      <option value="5">۵</option>
+    </select>
+  </label>
+  <label class="label--prices">
+    قیمت‌ها
+    <select class="form__input form__input--prices">
+      <option value="" selected disabled>
+        به نظرتان قیمت غذا و نوشیدنی چطور بود
+      </option>
+      <option value="گران">گران</option>
+      <option value="نسبتا گران">نسبتا گران</option>
+      <option value="مناسب">مناسب</option>
+      <option value="ارزان">ارزان</option>
+    </select>
+  </label>
+  <label class="label--overall"
+    >امتیاز کلی
+    <select class="form__input form__input--overall">
+      <option value="" selected disabled>
+        به تجربه ی خود از این مکان چه امتیازی می دهید؟
+      </option>
+      <option value="1">۱</option>
+      <option value="2">۲</option>
+      <option value="3">۳</option>
+      <option value="4">۴</option>
+      <option value="5">۵</option>
+    </select>
+  </label>
+  <div class="form__button--holder">
+    <button class="form__close" type="button">✕</button>
+    <button type="submit" class="form__submit">تایید</button>
+  </div>
+</form>
+`;
+      formSmall = document.querySelector('.form--small');
+      inputFood = formSmall.querySelector('.form__input--food');
+      inputPrices = formSmall.querySelector('.form__input--prices');
+      inputPrices.value = object.prices;
+      inputFood.value = object.food;
+    } else if (object.type === 'فرهنگی') {
+      parent.innerHTML = `<form class="form form--small">
+  <label
+    >نام<input type="text" class="form__input form__input--name" dir="auto"
+  /></label>
+  <label class="label--type"
+    >نوع مکان
+    <select class="form__input form__input--type" disabled>
+      <option value="" disabled>نوع فعالیت</option>
+      <option value="کافه">کافه</option>
+      <option value="رستوران">رستوران</option>
+      <option value="فرهنگی">مرکز فرهنگی</option>
+      <option selected value="تفریحی">مرکز تفریحی</option>
+    </select></label
+  >
+  <label class="label--blogging"
+    >تولید محتوا
+    <select class="form__input form__input--blogging">
+      <option value="" selected disabled>
+        این محل چقدر برای تولید محتوا مناسب است؟
+      </option>
+      <option value="کاملا مناسب">کاملا مناسب</option>
+      <option value="مناسب">مناسب</option>
+      <option value="نسبتا مناسب">نسبتا مناسب</option>
+      <option value="نامناسب">نامناسب</option>
+    </select></label
+  >
+  <label class="label--settings"
+    >محیط
+    <select class="form__input form__input--setting">
+      <option value="" disabled selected>
+        محیط این مکان را چطور ارزیابی میکنید؟
+      </option>
+      <option value="1">۱</option>
+      <option value="2">۲</option>
+      <option value="3">۳</option>
+      <option value="4">۴</option>
+      <option value="5">۵</option>
+    </select></label
+  >
+  <label class="label--overall"
+    >امتیاز کلی
+    <select class="form__input form__input--overall">
+      <option value="" selected disabled>
+        به تجربه ی خود از این مکان چه امتیازی می دهید؟
+      </option>
+      <option value="1">۱</option>
+      <option value="2">۲</option>
+      <option value="3">۳</option>
+      <option value="4">۴</option>
+      <option value="5">۵</option>
+    </select>
+  </label>
+  <div class="form__button--holder">
+    <button class="form__close" type="button">✕</button>
+    <button type="submit" class="form__submit">تایید</button>
+  </div>
+</form>`;
+      formSmall = document.querySelector('.form--small');
+      inputBlogging = formSmall.querySelector('.form__input--blogging');
+      inputSetting = formSmall.querySelector('.form__input--setting');
+      inputBlogging.value = object.blogging;
+      inputSetting.value = object.setting;
+    } else if (object.type === 'تفریحی') {
+      parent.innerHTML = `<form class="form form--small">
+  <label
+    >نام<input type="text" class="form__input form__input--name" dir="auto"
+  /></label>
+  <label class="label--type"
+    >نوع مکان
+    <select class="form__input form__input--type" disabled>
+      <option value="" disabled>نوع فعالیت</option>
+      <option value="کافه">کافه</option>
+      <option value="رستوران">رستوران</option>
+      <option value="فرهنگی">مرکز فرهنگی</option>
+      <option selected value="تفریحی">مرکز تفریحی</option>
+    </select></label
+  >
+  <label class="label--blogging"
+    >تولید محتوا
+    <select class="form__input form__input--blogging">
+      <option value="" selected disabled>
+        این محل چقدر برای تولید محتوا مناسب است؟
+      </option>
+      <option value="کاملا مناسب">کاملا مناسب</option>
+      <option value="مناسب">مناسب</option>
+      <option value="نسبتا مناسب">نسبتا مناسب</option>
+      <option value="نامناسب">نامناسب</option>
+    </select></label
+  >
+  <label class="label--settings"
+    >محیط
+    <select class="form__input form__input--setting">
+      <option value="" disabled selected>
+        محیط این مکان را چطور ارزیابی میکنید؟
+      </option>
+      <option value="1">۱</option>
+      <option value="2">۲</option>
+      <option value="3">۳</option>
+      <option value="4">۴</option>
+      <option value="5">۵</option>
+    </select></label
+  >
+  <label class="label--overall"
+    >امتیاز کلی
+    <select class="form__input form__input--overall">
+      <option value="" selected disabled>
+        به تجربه ی خود از این مکان چه امتیازی می دهید؟
+      </option>
+      <option value="1">۱</option>
+      <option value="2">۲</option>
+      <option value="3">۳</option>
+      <option value="4">۴</option>
+      <option value="5">۵</option>
+    </select>
+  </label>
+  <div class="form__button--holder">
+    <button class="form__close" type="button">✕</button>
+    <button type="submit" class="form__submit">تایید</button>
+  </div>
+</form>`;
+      formSmall = document.querySelector('.form--small');
+      inputBlogging = formSmall.querySelector('.form__input--blogging');
+      inputSetting = formSmall.querySelector('.form__input--setting');
+      inputBlogging.value = object.blogging;
+      inputSetting.value = object.setting;
+    }
+
+    let inputName = formSmall.querySelector('.form__input--name');
+    let inputType = formSmall.querySelector('.form__input--type');
+    let inputOverall = formSmall.querySelector('.form__input--overall');
+
+    inputName.value = object.name;
+    inputType.value = object.type;
+    inputOverall.value = object.overall;
+
+    formSmall.addEventListener('submit', e => {
+      object.name = inputName.value;
+      object.overall = inputOverall.value;
+      if (object.type === 'کافه') {
+        object.food = +inputFood.value;
+        object.prices = inputPrices.value;
+        parent.innerHTML = ` 
+        <div class="activity__button--holder">
+          <button class="activity__remove">✕</button>
+          <button class="activity__edit">🖉</button>
+        </div>
+            <p class="activity__text">${object.name}</p>
+            <div class="activity__details-container">
+              <div class="activity__details">
+                <div class="activity__icon">☕</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  object.food
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">💵</div>
+                <div class="activity__value">${object.prices}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">⭐</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  object.overall
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📅</div>
+                <div class="activity__value">${object.date}</div>
+              </div>
+            </div>`;
+      } else if (object.type === 'رستوران') {
+        object.food = +inputFood.value;
+        object.prices = inputPrices.value;
+        parent.innerHTML = `<div class="activity__button--holder">
+          <button class="activity__remove">✕</button>
+          <button class="activity__edit">🖉</button>
+        </div>
+            <p class="activity__text">${object.name}</p>
+            <div class="activity__details-container">
+              <div class="activity__details">
+                <div class="activity__icon">🍴</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  object.food
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">💵</div>
+                <div class="activity__value">${object.prices}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">⭐</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  object.overall
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📅</div>
+                <div class="activity__value">${object.date}</div>
+              </div>
+            </div>
+          </div>`;
+      } else if (object.type === 'فرهنگی') {
+        object.blogging = inputBlogging.value;
+        object.setting = +inputSetting.value;
+        parent.innerHTML = ` <div class="activity__button--holder">
+          <button class="activity__remove">✕</button>
+          <button class="activity__edit">🖉</button>
+        </div>
+            <p class="activity__text">${object.name}</p>
+            <div class="activity__details-container">
+              <div class="activity__details">
+                <div class="activity__icon">🏛</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  object.setting
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📷</div>
+                <div class="activity__value">${object.blogging}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">⭐</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  object.overall
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📅</div>
+                <div class="activity__value">${object.date}</div>
+              </div>
+            </div>
+          </div>`;
+      } else if (object.type === 'تفریحی') {
+        object.blogging = inputBlogging.value;
+        object.setting = +inputSetting.value;
+        parent.innerHTML = `        <div class="activity__button--holder">
+          <button class="activity__remove">✕</button>
+          <button class="activity__edit">🖉</button>
+        </div>
+            <p class="activity__text">${object.name}</p>
+            <div class="activity__details-container">
+              <div class="activity__details">
+                <div class="activity__icon">🎡</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  object.setting
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📷</div>
+                <div class="activity__value">${object.blogging}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">⭐</div>
+                <div class="activity__value">${this.#numberToPersian(
+                  object.overall
+                )}</div>
+              </div>
+              <div class="activity__details">
+                <div class="activity__icon">📅</div>
+                <div class="activity__value">${object.date}</div>
+              </div>
+            </div>
+          </div>`;
+      }
+      localStorage.setItem('workouts', JSON.stringify(this.#workouts));
+      location.reload();
+    });
   }
 }
 

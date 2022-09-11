@@ -52,7 +52,6 @@
       <div class="sidebar__container" dir="ltr">
         <div class="sidebar__container--rtl" dir="rtl">
           <form class="form form--hidden">
-            <button class="form__close" type="button">✕</button>
             <label
               >نام<input
                 type="text"
@@ -132,7 +131,10 @@
                 <option value="5">۵</option>
               </select>
             </label>
-            <button type="submit" class="form__submit">تایید</button>
+            <div class="form__button--holder">
+              <button class="form__close" type="button">✕</button>
+              <button type="submit" class="form__submit">تایید</button>
+            </div>
           </form>
           <div class="workout-container"></div>
         </div>
