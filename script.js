@@ -46,6 +46,82 @@ const entertainmentValue = document.querySelector(
   '.overview__value--entertainment'
 );
 
+// Workout classes
+
+class Workout {
+  // Date
+  date = new Intl.DateTimeFormat('fa-IR', {
+    year: 'numeric',
+    day: 'numeric',
+    month: 'numeric',
+  }).format();
+  id = (Date.now() + '').slice(-10);
+
+  constructor(name, coords, type, overall) {
+    this.name = name;
+    this.coords = coords;
+    this.type = type;
+    this.overall = overall;
+  }
+}
+
+class Cafe extends Workout {
+  type = 'کافه';
+
+  constructor(name, coords, type, overall, food, prices) {
+    super(name, coords, type, overall);
+    this.food = food;
+    this.prices = prices;
+  }
+}
+
+class Restaurant extends Workout {
+  type = 'رستوران';
+
+  constructor(name, coords, type, overall, food, prices) {
+    super(name, coords, type, overall);
+    this.food = food;
+    this.prices = prices;
+  }
+}
+
+class Cultural extends Workout {
+  type = 'فرهنگی';
+
+  constructor(name, coords, type, overall, setting, blogging) {
+    super(name, coords, type, overall);
+    this.setting = setting;
+    this.blogging = blogging;
+  }
+}
+
+class Entertainment extends Workout {
+  type = 'تفریحی';
+
+  constructor(name, coords, type, overall, setting, blogging) {
+    super(name, coords, type, overall);
+    this.setting = setting;
+    this.blogging = blogging;
+  }
+}
+
+const cafe = new Cafe([24, 32], 'cafe', 5, 2, 'ارزان');
+const restaurant = new Restaurant([24, 32], 'cafe', 5, 2, 'ارزان');
+const cultural = new Cultural(
+  [24, 32],
+  'cafe',
+  5,
+  'کاملا مناسب',
+  'کاملا مناسب'
+);
+const entertainment = new Entertainment(
+  [24, 32],
+  'cafe',
+  5,
+  'کاملا مناسب',
+  'کاملا مناسب'
+);
+
 // App class
 class App {
   // Private properties
@@ -121,6 +197,48 @@ class App {
     // Get stuff from local storage
     const data = JSON.parse(localStorage.getItem('workouts'));
     data.forEach(workout => {
+      switch (workout.type) {
+        case 'کافه':
+          workout = new Cafe(
+            workout.name,
+            workout.coords,
+            workout.type,
+            workout.overall,
+            workout.food,
+            workout.prices
+          );
+          break;
+        case 'رستوران':
+          workout = new Restaurant(
+            workout.name,
+            workout.coords,
+            workout.type,
+            workout.overall,
+            workout.food,
+            workout.prices
+          );
+          break;
+        case 'فرهنگی':
+          workout = new Cultural(
+            workout.name,
+            workout.coords,
+            workout.type,
+            workout.overall,
+            workout.setting,
+            workout.blogging
+          );
+          break;
+        case 'تفریحی':
+          workout = new Entertainment(
+            workout.name,
+            workout.coords,
+            workout.type,
+            workout.overall,
+            workout.setting,
+            workout.blogging
+          );
+          break;
+      }
       this.#renderWorkout(workout);
       this.#renderMarker(workout);
     });
@@ -1092,6 +1210,7 @@ class App {
             </div>
           </div>`;
       }
+      this.#editOpen = false;
       localStorage.setItem('workouts', JSON.stringify(this.#workouts));
       location.reload();
     });
@@ -1099,79 +1218,3 @@ class App {
 }
 
 const app = new App();
-
-// Workout classes
-
-class Workout {
-  // Date
-  date = new Intl.DateTimeFormat('fa-IR', {
-    year: 'numeric',
-    day: 'numeric',
-    month: 'numeric',
-  }).format();
-  id = (Date.now() + '').slice(-10);
-
-  constructor(name, coords, type, overall) {
-    this.name = name;
-    this.coords = coords;
-    this.type = type;
-    this.overall = overall;
-  }
-}
-
-class Cafe extends Workout {
-  type = 'کافه';
-
-  constructor(name, coords, type, overall, food, prices) {
-    super(name, coords, type, overall);
-    this.food = food;
-    this.prices = prices;
-  }
-}
-
-class Restaurant extends Workout {
-  type = 'رستوران';
-
-  constructor(name, coords, type, overall, food, prices) {
-    super(name, coords, type, overall);
-    this.food = food;
-    this.prices = prices;
-  }
-}
-
-class Cultural extends Workout {
-  type = 'فرهنگی';
-
-  constructor(name, coords, type, overall, setting, blogging) {
-    super(name, coords, type, overall);
-    this.setting = setting;
-    this.blogging = blogging;
-  }
-}
-
-class Entertainment extends Workout {
-  type = 'تفریحی';
-
-  constructor(name, coords, type, overall, setting, blogging) {
-    super(name, coords, type, overall);
-    this.setting = setting;
-    this.blogging = blogging;
-  }
-}
-
-const cafe = new Cafe([24, 32], 'cafe', 5, 2, 'ارزان');
-const restaurant = new Restaurant([24, 32], 'cafe', 5, 2, 'ارزان');
-const cultural = new Cultural(
-  [24, 32],
-  'cafe',
-  5,
-  'کاملا مناسب',
-  'کاملا مناسب'
-);
-const entertainment = new Entertainment(
-  [24, 32],
-  'cafe',
-  5,
-  'کاملا مناسب',
-  'کاملا مناسب'
-);
